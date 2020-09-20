@@ -1,4 +1,5 @@
-﻿using WebMetrics.Api.Auth.Entities;
+﻿using System.Collections.Generic;
+using WebMetrics.Api.Auth.Entities;
 
 namespace WebMetrics.Api.Auth.Sevices
 {
@@ -6,5 +7,6 @@ namespace WebMetrics.Api.Auth.Sevices
     {
         User Authenticate(string username, string password);
         User GetById(int id);
+        IEnumerable<User> GetAll();
     }
 }

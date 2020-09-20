@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebMetrics.Api</name>
+    </assembly>
+    <members>
+        <member name="M:WebMetrics.Api.Controllers.UserController.GetAll">
+            <summary>
+            Allow get all the users
+            </summary>
+            <remarks>
+            Sample request:
+            
+                Get /
+            </remarks>
+            <returns>IEnumerable&lt;User&gt;</returns>
+            <response code="200">List of users</response>
+            <response code="404">No users found </response> 
+        </member>
+        <member name="M:WebMetrics.Api.Controllers.UserController.GetById(System.Int32)">
+            <summary>
+            Allow get an user
+            </summary>
+            <remarks>
+            Sample request:
+            
+                Get /1
+            </remarks>
+            <returns>User</returns>
+            <response code="200">user</response>
+            <response code="404">No users found </response> 
+        </member>
+        <member name="T:WebMetrics.Api.Filters.AuthOperationFilter">
+            <summary>
+            This class apply schemes to specific operations
+            </summary>
+        </member>
+        <member name="M:BalanceManagement.Api.Controllers.LoginController.Authenticate(WebMetrics.Api.Auth.ViewModels.AuthenticateModel)">
+             <summary>
+             Allow to a user authenticate
+             </summary>
+             <remarks>
+             Sample request:
+             
+                 POST /Todo
+                 {
+                    "username": "user",
+                    "password": "password"
+                 }
+            
+             </remarks>
+             <param name="model">User and password</param>
+             <returns>userAuthenticated</returns>
+             <response code="200">User Authenticated</response>
+             <response code="400">User or password incorrect</response>  
+        </member>
+    </members>
+</doc>

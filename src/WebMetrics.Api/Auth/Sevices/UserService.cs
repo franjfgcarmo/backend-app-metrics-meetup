@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using WebMetrics.Api.Auth.Entities;
+using Microsoft.Extensions.Options;
+using WebMetrics.Api.Models.Config;
 
 namespace WebMetrics.Api.Auth.Sevices
 {
@@ -15,14 +17,20 @@ namespace WebMetrics.Api.Auth.Sevices
         private List<User> _users = new List<User>
         {
             new User { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = Role.Admin },
-            new User { Id = 2, FirstName = "Normal", LastName = "User", Username = "user", Password = "user", Role = Role.User }
+            new User { Id = 2, FirstName = "Normal", LastName = "User", Username = "user", Password = "user", Role = Role.User },
+            new User { Id = 3, FirstName = "Lewis", LastName = "Hamilton", Username = "lewis", Password = "Lewis", Role = Role.User },
+            new User { Id = 4, FirstName = "Carlos", LastName = "Sainz", Username = "carlos", Password = "carlos", Role = Role.User },
+            new User { Id = 5, FirstName = "Sebastian", LastName = "Vettel", Username = "sebastian", Password = "sebastian", Role = Role.User },
+            new User { Id = 6, FirstName = "Esteban", LastName = "Ocon", Username = "esteban", Password = "esteban", Role = Role.User },
+            new User { Id = 7, FirstName = "Sergio", LastName = "Pérez", Username = "sergio", Password = "sergio", Role = Role.User },
+
         };
 
-        private readonly IConfiguration _appSettings;
+        private readonly SecurityConfig _securityConfig;
 
-        public UserService(IConfiguration appSettings)
+        public UserService(IOptions<SecurityConfig> config)
         {
-            _appSettings = appSettings;
+            _securityConfig = config.Value;
         }
 
         public User Authenticate(string username, string password)
@@ -33,7 +41,7 @@ namespace WebMetrics.Api.Auth.Sevices
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.GetSection("AppSettings").GetSection("Secret").Value);
+            var key = Encoding.ASCII.GetBytes(_securityConfig.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -41,7 +49,7 @@ namespace WebMetrics.Api.Auth.Sevices
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(_securityConfig.ExpirationHours),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -54,6 +62,11 @@ namespace WebMetrics.Api.Auth.Sevices
         {
             var user = _users.FirstOrDefault(x => x.Id == id);
             return user;
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return _users;
         }
     }
 }
